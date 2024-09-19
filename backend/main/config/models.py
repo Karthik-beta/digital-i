@@ -1,3 +1,4 @@
+from datetime import datetime
 from django.db import models
 
 
@@ -219,10 +220,12 @@ class Shift(models.Model):
 
     def calculate_lunch_duration(self):
         """
-        Calculates the duration between lunch start and lunch end times.
+        Calculates the duration between lunch start and lunch end times as a timedelta.
         """
         if self.lunch_in and self.lunch_out:
-            return self.lunch_out - self.lunch_in
+            lunch_in_datetime = datetime.combine(datetime.min, self.lunch_in)
+            lunch_out_datetime = datetime.combine(datetime.min, self.lunch_out)
+            return lunch_out_datetime - lunch_in_datetime
         return None
 
     def __str__(self):
@@ -273,9 +276,13 @@ class AutoShift(models.Model):
 
     def calculate_lunch_duration(self):
         """
-        Calculates the duration between lunch start and lunch end times.
+        Calculates the duration between lunch start and lunch end times as a timedelta.
         """
-        return self.lunch_out - self.lunch_in
+        if self.lunch_in and self.lunch_out:
+            lunch_in_datetime = datetime.combine(datetime.min, self.lunch_in)
+            lunch_out_datetime = datetime.combine(datetime.min, self.lunch_out)
+            return lunch_out_datetime - lunch_in_datetime
+        return None
 
     def __str__(self):
         """
